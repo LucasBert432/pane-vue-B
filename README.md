@@ -1,40 +1,122 @@
-# register-user
+# 🏦 Register User BTG — Vue 3 Dashboard
 
-This template should help get you started developing with Vue 3 in Vite.
+<p align="center">
+  <img src="./src/assets/image/btg-pactual.png" alt="Register User Dashboard" width="160" />
+</p>
 
-## Recommended IDE Setup
+<p align="center">
+  <strong>Dashboard moderno desenvolvido com Vue 3 + Vite</strong><br />
+  Projeto focado em arquitetura limpa, experiência do usuário e boas práticas de frontend.
+</p>
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Recommended Browser Setup
+## ✨ Visão Geral
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+O **Register User** é uma aplicação frontend construída com **Vue 3**, simulando um ambiente de dashboard profissional inspirado em aplicações financeiras modernas.
 
-## Customize configuration
+O projeto serve como base para:
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Cadastro e visualização de usuários
+- Dashboards administrativos
+- Integração futura com APIs reais
+- Estudos de arquitetura frontend escalável
 
-## Project Setup
+---
 
-```sh
+## 🧱 Estrutura do Projeto
+
+```text
+register-user/
+├── src/
+│   ├── assets/          # Assets estáticos
+│   ├── components/      # Componentes reutilizáveis
+│   ├── views/           # Páginas da aplicação
+│   ├── router/          # Vue Router
+│   ├── stores/          # Pinia (state management)
+│   ├── styles/          # Estilos globais / SCSS
+│   └── main.ts          # Bootstrap da aplicação
+├── public/
+├── index.html
+└── vite.config.ts
+📦 Tecnologias Utilizadas
+Core
+Vue 3 (Composition API)
+
+Vite
+
+TypeScript
+
+Gerenciamento de Estado & Rotas
+Pinia
+
+Vue Router
+
+UI / UX
+SCSS (sass-embedded)
+
+Lucide Icons
+
+Vue ChartJS
+
+Formulários & Validação
+Vee-Validate
+
+Yup
+
+HTTP
+Axios
+
+🎨 UI / UX
+Layout moderno e responsivo
+
+Sidebar dinâmica (desktop e mobile)
+
+Componentização focada em reutilização
+
+Estado global centralizado
+
+Design inspirado em dashboards corporativos
+
+🚀 Scripts Disponíveis
+Instalação
+bash
+Copiar código
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
+Desenvolvimento
+bash
+Copiar código
 npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
+Build de Produção
+bash
+Copiar código
 npm run build
+Preview do Build
+bash
+Copiar código
+npm run preview
+Type Check
+bash
+Copiar código
+npm run type-check
+🧪 Status do Projeto
+✅ Estrutura base configurada
+
+✅ Vue 3 + Vite
+
+✅ Pinia + Router
+
+✅ Layout de dashboard
+
+🚧 Integração com API
+
+🚧 Autenticação real
+
+🛠️ Requisitos
+Node.js >= 20
+
+npm ou yarn
+
+📄 Licença
+Projeto privado para fins educacionais, estudos e demonstração.
 ```
-# pane-vue-B
-# pane-vue-B
