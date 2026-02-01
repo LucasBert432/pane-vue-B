@@ -119,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { useToastStore } from "@/store/useToastStore";
+import { useToastStore } from "../../store/useToastStore";
 
 const toastStore = useToastStore();
 const { toasts, removeToast } = toastStore;

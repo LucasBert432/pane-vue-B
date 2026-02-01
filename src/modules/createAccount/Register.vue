@@ -241,11 +241,7 @@ defineExpose({
 
               <Field name="hasAdvisor" type="checkbox" v-slot="{ field }">
                 <label :class="$style.checkbox">
-                  <input
-                    type="checkbox"
-                    v-bind="field"
-                    :checked="field.value"
-                  />
+                  <input type="checkbox" v-bind="field" :value="true" />
                   Possuo relacionamento com assessor
                 </label>
               </Field>

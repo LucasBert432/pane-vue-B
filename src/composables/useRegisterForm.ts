@@ -1,4 +1,4 @@
-import { ref, computed, Ref } from "vue";
+import { ref, computed, Ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { useForm } from "vee-validate";
@@ -69,11 +69,17 @@ export function useRegisterForm() {
       advisorName: "",
     } as FormValues,
   });
+  watch(
+    () => values.hasAdvisor,
+    (hasAdvisor: boolean) => {
+      if (!hasAdvisor) {
+        values.advisorName = "";
+      }
+    },
+  );
 
   const submitForm = handleSubmit(async (formValues: FormValues) => {
     try {
-      console.log("Submitting registration:", formValues);
-
       const result = await authStore.register({
         ...formValues,
         cpf: formValues.cpf.replace(/\D/g, ""),
