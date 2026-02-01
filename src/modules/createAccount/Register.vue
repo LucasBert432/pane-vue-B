@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { Field } from "vee-validate";
-
 import Button from "../../components/Button";
 import Dropdown from "../../components/Dropdown";
 import FormInput from "../../components/FormInput";
 import { formatCPF, formatPhone } from "../../utils/formatters";
 import { cpfMask, phoneMask } from "../../utils/mask";
 import { useRegisterForm } from "../../composables/useRegisterForm";
+import BaseCheckbox from "../../components/BaseCheckbox";
 
 const { isLoading, isSuccess, userData, values, submitForm, goToHome } =
   useRegisterForm();
@@ -239,12 +238,12 @@ defineExpose({
                 />
               </div>
 
-              <Field name="hasAdvisor" type="checkbox" v-slot="{ field }">
-                <label :class="$style.checkbox">
-                  <input type="checkbox" v-bind="field" :value="true" />
-                  Possuo relacionamento com assessor
-                </label>
-              </Field>
+              <div :class="$style.leftOnly">
+                <BaseCheckbox
+                  name="hasAdvisor"
+                  label="Possuo relacionamento com assessor"
+                />
+              </div>
 
               <div v-if="values.hasAdvisor" :class="$style.advisorField">
                 <FormInput
