@@ -1,8 +1,13 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from "axios";
+import axios, {
+  AxiosInstance,
+  AxiosResponse,
+  AxiosError,
+  AxiosRequestConfig,
+} from "axios";
 import { useToast } from "@/composables/useToast";
 import router from "@/router";
 
-interface ApiError {
+export interface ApiError {
   status: number;
   message: string;
   code: string;
@@ -25,7 +30,6 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
   },
   (error) => Promise.reject(error),
@@ -52,7 +56,6 @@ api.interceptors.response.use(
 
         if (currentPath !== "/" && currentPath !== "/login") {
           toast.error("Sessão expirada", "Faça login novamente para continuar");
-
           router.push("/login");
         }
       }
@@ -110,5 +113,33 @@ api.interceptors.response.use(
     return Promise.reject(apiError);
   },
 );
+
+type ApiResult<T> = Promise<T>;
+
+export const apiClient = {
+  get<T>(url: string, config?: AxiosRequestConfig): ApiResult<T> {
+    return api.get(url, config) as unknown as ApiResult<T>;
+  },
+
+  post<T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig,
+  ): ApiResult<T> {
+    return api.post(url, data, config) as unknown as ApiResult<T>;
+  },
+
+  put<T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig,
+  ): ApiResult<T> {
+    return api.put(url, data, config) as unknown as ApiResult<T>;
+  },
+
+  delete<T>(url: string, config?: AxiosRequestConfig): ApiResult<T> {
+    return api.delete(url, config) as unknown as ApiResult<T>;
+  },
+};
 
 export default api;

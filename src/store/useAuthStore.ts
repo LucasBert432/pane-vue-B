@@ -1,8 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import api from "@/services/api";
+import { apiClient } from "@/services/api";
 import { useToast } from "@/composables/useToast";
-import type { AxiosError } from "axios";
 
 export interface User {
   id: string;
@@ -23,12 +22,12 @@ export interface User {
 export interface AuthResponse {
   user: User;
   token: string;
-  message?: string;
 }
 
 export interface ApiSuccessResponse {
   success: true;
   data: AuthResponse;
+  message?: string;
 }
 
 export interface ApiErrorResponse {
@@ -72,9 +71,10 @@ export const useAuthStore = defineStore("auth", () => {
       isLoading.value = true;
       error.value = null;
 
-      const response = await api.post<ApiResponse>("/auth/login", credentials);
-
-      const apiResponse = response.data;
+      const apiResponse = await apiClient.post<ApiResponse>(
+        "/auth/login",
+        credentials,
+      );
 
       if (!apiResponse.success) {
         const message = apiResponse.error.message;
@@ -90,15 +90,12 @@ export const useAuthStore = defineStore("auth", () => {
       localStorage.setItem("user", JSON.stringify(apiResponse.data.user));
 
       return { success: true, data: apiResponse.data };
-    } catch (err) {
-      const axiosError = err as AxiosError<any>;
-      const message =
-        axiosError.response?.data?.error?.message ||
-        axiosError.message ||
-        "Erro ao fazer login";
+    } catch (err: any) {
+      const message = err?.message || "Erro ao fazer login";
 
       error.value = message;
       showError("Erro no login", message);
+
       return { success: false, error: message };
     } finally {
       isLoading.value = false;
@@ -109,11 +106,13 @@ export const useAuthStore = defineStore("auth", () => {
     userData: RegisterData,
   ): Promise<{ success: boolean; data?: AuthResponse; error?: string }> => {
     try {
+      isLoading.value = true;
       error.value = null;
 
-      const response = await api.post<ApiResponse>("/auth/register", userData);
-
-      const apiResponse = response.data;
+      const apiResponse = await apiClient.post<ApiResponse>(
+        "/auth/register",
+        userData,
+      );
 
       if (!apiResponse.success) {
         const message = apiResponse.error.message;
@@ -129,27 +128,27 @@ export const useAuthStore = defineStore("auth", () => {
       localStorage.setItem("user", JSON.stringify(apiResponse.data.user));
 
       return { success: true, data: apiResponse.data };
-    } catch (err) {
-      const axiosError = err as AxiosError<any>;
-      const message =
-        axiosError.response?.data?.error?.message ||
-        axiosError.message ||
-        "Erro ao realizar cadastro";
+    } catch (err: any) {
+      const message = err?.message || "Erro ao realizar cadastro";
 
       error.value = message;
       showError("Erro no cadastro", message);
+
       return { success: false, error: message };
+    } finally {
+      isLoading.value = false;
     }
   };
 
   const logout = async () => {
     try {
-      await api.post("/auth/logout");
+      await apiClient.post("/auth/logout");
     } catch {
-      token.value = null;
     } finally {
       user.value = null;
       token.value = null;
+      error.value = null;
+
       localStorage.removeItem("auth_token");
       localStorage.removeItem("user");
     }
@@ -160,8 +159,7 @@ export const useAuthStore = defineStore("auth", () => {
     if (!storedToken) return false;
 
     try {
-      const response = await api.get<ApiResponse>("/auth/verify");
-      const apiResponse = response.data;
+      const apiResponse = await apiClient.get<ApiResponse>("/auth/verify");
 
       if (apiResponse.success) {
         user.value = apiResponse.data.user;
@@ -184,7 +182,7 @@ export const useAuthStore = defineStore("auth", () => {
     if (storedToken && storedUser) {
       try {
         token.value = storedToken;
-        user.value = JSON.parse(storedUser);
+        user.value = JSON.parse(storedUser) as User;
       } catch {
         logout();
       }
