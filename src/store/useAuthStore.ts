@@ -1,8 +1,8 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import axios from "axios";
-import type { AxiosResponse } from "axios";
+import api from "@/services/api";
 import { useToast } from "@/composables/useToast";
+import type { AxiosError } from "axios";
 
 export interface User {
   id: string;
@@ -16,7 +16,6 @@ export interface User {
   clientSince: string;
   tier: string;
   createdAt: string;
-  token?: string;
   hasAdvisor: boolean;
   advisorName: string;
 }
@@ -36,11 +35,11 @@ export interface ApiErrorResponse {
   success: false;
   error: {
     message: string;
-    code: string;
+    code?: string;
   };
 }
 
-type ApiResponse = ApiSuccessResponse | ApiErrorResponse;
+export type ApiResponse = ApiSuccessResponse | ApiErrorResponse;
 
 export interface LoginCredentials {
   cpf: string;
@@ -62,7 +61,7 @@ export const useAuthStore = defineStore("auth", () => {
   const user = ref<User | null>(null);
   const token = ref<string | null>(null);
   const error = ref<string | null>(null);
-  const isLoading = ref<boolean>(false);
+  const isLoading = ref(false);
 
   const { error: showError } = useToast();
 
@@ -70,53 +69,39 @@ export const useAuthStore = defineStore("auth", () => {
     credentials: LoginCredentials,
   ): Promise<{ success: boolean; data?: AuthResponse; error?: string }> => {
     try {
-      error.value = null;
       isLoading.value = true;
+      error.value = null;
 
-      const response: AxiosResponse<ApiResponse> = await axios.post(
-        "/api/auth/login",
-        credentials,
-      );
+      const response = await api.post<ApiResponse>("/auth/login", credentials);
 
       const apiResponse = response.data;
 
       if (!apiResponse.success) {
-        const errorMessage = apiResponse.error.message || "Erro ao fazer login";
-        error.value = errorMessage;
-        showError("Erro no login", errorMessage);
-        return { success: false, error: errorMessage };
+        const message = apiResponse.error.message;
+        error.value = message;
+        showError("Erro no login", message);
+        return { success: false, error: message };
       }
 
-      if (apiResponse.success && apiResponse.data) {
-        const { user: userData, token: userToken } = apiResponse.data;
+      user.value = apiResponse.data.user;
+      token.value = apiResponse.data.token;
 
-        user.value = userData;
-        token.value = userToken;
+      localStorage.setItem("auth_token", apiResponse.data.token);
+      localStorage.setItem("user", JSON.stringify(apiResponse.data.user));
 
-        localStorage.setItem("auth_token", userToken);
-        localStorage.setItem("user", JSON.stringify(userData));
-
-        return {
-          success: true,
-          data: apiResponse.data,
-        };
-      }
-
-      const fallbackError = "Estrutura de resposta inválida";
-      error.value = fallbackError;
-      showError("Erro no login", fallbackError);
-      return { success: false, error: fallbackError };
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.error?.message ||
-        err.response?.data?.message ||
-        err.message ||
+      return { success: true, data: apiResponse.data };
+    } catch (err) {
+      const axiosError = err as AxiosError<any>;
+      const message =
+        axiosError.response?.data?.error?.message ||
+        axiosError.message ||
         "Erro ao fazer login";
 
-      error.value = errorMessage;
-      showError("Erro no login", errorMessage);
-
-      return { success: false, error: errorMessage };
+      error.value = message;
+      showError("Erro no login", message);
+      return { success: false, error: message };
+    } finally {
+      isLoading.value = false;
     }
   };
 
@@ -126,61 +111,48 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       error.value = null;
 
-      const response: AxiosResponse<ApiResponse> = await axios.post(
-        "/api/auth/register",
-        userData,
-      );
+      const response = await api.post<ApiResponse>("/auth/register", userData);
 
       const apiResponse = response.data;
 
       if (!apiResponse.success) {
-        const errorMessage =
-          apiResponse.error.message || "Erro ao realizar cadastro";
-        error.value = errorMessage;
-        showError("Erro no cadastro", errorMessage);
-        return { success: false, error: errorMessage };
+        const message = apiResponse.error.message;
+        error.value = message;
+        showError("Erro no cadastro", message);
+        return { success: false, error: message };
       }
 
-      if (apiResponse.success && apiResponse.data) {
-        const { user: registeredUser, token: userToken } = apiResponse.data;
+      user.value = apiResponse.data.user;
+      token.value = apiResponse.data.token;
 
-        user.value = registeredUser;
-        token.value = userToken;
+      localStorage.setItem("auth_token", apiResponse.data.token);
+      localStorage.setItem("user", JSON.stringify(apiResponse.data.user));
 
-        localStorage.setItem("auth_token", userToken);
-        localStorage.setItem("user", JSON.stringify(registeredUser));
-
-        return {
-          success: true,
-          data: apiResponse.data,
-        };
-      }
-
-      const fallbackError = "Estrutura de resposta inválida";
-      error.value = fallbackError;
-      showError("Erro no cadastro", fallbackError);
-      return { success: false, error: fallbackError };
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.error?.message ||
-        err.response?.data?.message ||
-        err.message ||
+      return { success: true, data: apiResponse.data };
+    } catch (err) {
+      const axiosError = err as AxiosError<any>;
+      const message =
+        axiosError.response?.data?.error?.message ||
+        axiosError.message ||
         "Erro ao realizar cadastro";
 
-      error.value = errorMessage;
-      showError("Erro no cadastro", errorMessage);
-
-      return { success: false, error: errorMessage };
+      error.value = message;
+      showError("Erro no cadastro", message);
+      return { success: false, error: message };
     }
   };
 
-  const logout = () => {
-    user.value = null;
-    token.value = null;
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("user");
-
-    axios.post("/api/auth/logout").catch(console.error);
+  const logout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      token.value = null;
+    } finally {
+      user.value = null;
+      token.value = null;
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("user");
+    }
   };
 
   const verifyToken = async (): Promise<boolean> => {
@@ -188,27 +160,19 @@ export const useAuthStore = defineStore("auth", () => {
     if (!storedToken) return false;
 
     try {
-      const response: AxiosResponse<ApiResponse> = await axios.get(
-        "/api/auth/verify",
-        {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-          },
-        },
-      );
-
+      const response = await api.get<ApiResponse>("/auth/verify");
       const apiResponse = response.data;
 
-      if (apiResponse.success && apiResponse.data?.user) {
+      if (apiResponse.success) {
         user.value = apiResponse.data.user;
         token.value = storedToken;
         return true;
       }
 
-      logout();
+      await logout();
       return false;
-    } catch (err) {
-      logout();
+    } catch {
+      await logout();
       return false;
     }
   };
@@ -221,8 +185,7 @@ export const useAuthStore = defineStore("auth", () => {
       try {
         token.value = storedToken;
         user.value = JSON.parse(storedUser);
-      } catch (e) {
-        console.error("Failed to parse stored user:", e);
+      } catch {
         logout();
       }
     }
@@ -232,11 +195,11 @@ export const useAuthStore = defineStore("auth", () => {
     user,
     token,
     error,
+    isLoading,
     login,
     register,
     logout,
     verifyToken,
     initializeFromStorage,
-    isLoading,
   };
 });
