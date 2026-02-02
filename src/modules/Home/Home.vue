@@ -381,7 +381,7 @@ const chartOptionsMobile = {
   plugins: {
     legend: { display: false },
     tooltip: {
-      mode: "index",
+      mode: "index" as const,
       intersect: false,
       backgroundColor: "rgba(15, 23, 42, 0.95)",
       titleColor: "#ffffff",
@@ -422,7 +422,7 @@ const chartOptionsMobile = {
   },
   interaction: {
     intersect: false,
-    mode: "index",
+    mode: "index" as const,
   },
 };
 
@@ -432,7 +432,7 @@ const chartOptions = {
   plugins: {
     legend: { display: false },
     tooltip: {
-      mode: "index",
+      mode: "index" as const,
       intersect: false,
       backgroundColor: "rgba(15, 23, 42, 0.95)",
       titleColor: "#ffffff",
@@ -469,7 +469,7 @@ const chartOptions = {
   },
   interaction: {
     intersect: false,
-    mode: "index",
+    mode: "index" as const,
   },
 };
 
@@ -492,10 +492,6 @@ const formatCurrency = (value: number): string => {
 
 const formatPercent = (value: number): string => {
   return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
-};
-
-const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString("pt-BR");
 };
 
 const viewCardDetails = (card: CreditCard) => {
