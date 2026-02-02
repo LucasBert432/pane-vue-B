@@ -81,25 +81,13 @@ Design inspirado em dashboards corporativos
 🚀 Scripts Disponíveis
 Instalação
 bash
-Copiar código
 npm install
-Desenvolvimento
-bash
-Copiar código
 npm run dev
-Build de Produção
-bash
-Copiar código
 npm run build
 Preview do Build
-bash
-Copiar código
 npm run preview
 Type Check
-bash
-Copiar código
 npm run type-check
-🧪 Status do Projeto
 ✅ Estrutura base configurada
 
 ✅ Vue 3 + Vite
