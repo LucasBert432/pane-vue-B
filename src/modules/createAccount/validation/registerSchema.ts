@@ -14,31 +14,36 @@ const countries = [
   "OTHER",
 ] as const;
 
-export const registerSchema: yup.Schema<RegisterForm> = yup.object({
-  name: yup.string().required("Campo obrigatório"),
+export const registerSchema: yup.Schema<RegisterForm> = yup
+  .object({
+    name: yup.string().required("Campo obrigatório"),
 
-  email: yup.string().email("Email inválido").required("Campo obrigatório"),
+    email: yup.string().email("Email inválido").required("Campo obrigatório"),
 
-  cpf: yup.string().length(14, "CPF inválido").required("Campo obrigatório"),
+    cpf: yup.string().length(14, "CPF inválido").required("Campo obrigatório"),
 
-  phone: yup.string().min(14, "Celular inválido").required("Campo obrigatório"),
+    phone: yup
+      .string()
+      .min(14, "Celular inválido")
+      .required("Campo obrigatório"),
 
-  country: yup
-    .string()
-    .oneOf(countries, "País inválido")
-    .required("Selecione um país"),
+    country: yup
+      .mixed<(typeof countries)[number]>()
+      .oneOf(countries, "País inválido")
+      .required("Selecione um país"),
 
-  password: yup
-    .string()
-    .min(6, "Mínimo 6 dígitos")
-    .max(8, "Máximo 8 dígitos")
-    .required("Campo obrigatório"),
+    password: yup
+      .string()
+      .min(6, "Mínimo 6 dígitos")
+      .max(8, "Máximo 8 dígitos")
+      .required("Campo obrigatório"),
 
-  hasAdvisor: yup.boolean(),
+    hasAdvisor: yup.boolean().required().default(false),
 
-  advisorName: yup.string().when("hasAdvisor", {
-    is: true,
-    then: (schema) => schema.required("Informe o nome do assessor"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-});
+    advisorName: yup.string().when("hasAdvisor", {
+      is: true,
+      then: (schema) => schema.required("Informe o nome do assessor"),
+      otherwise: (schema) => schema.notRequired().nullable(),
+    }),
+  })
+  .required();
