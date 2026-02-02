@@ -1,3 +1,4 @@
+import { User } from "@/store/useAuthStore";
 import api from "./api";
 
 export const userService = {
@@ -10,7 +11,7 @@ export const userService = {
     }
   },
 
-  async updateProfile(userData) {
+  async updateProfile(userData: User) {
     try {
       const response = await api.put("/user/profile", userData);
       return response;
@@ -29,7 +30,7 @@ export const userService = {
     }
   },
 
-  async updatePreferences(preferences) {
+  async updatePreferences(preferences: any) {
     try {
       const response = await api.put("/user/preferences", preferences);
       return response;

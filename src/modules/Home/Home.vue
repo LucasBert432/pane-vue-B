@@ -172,12 +172,7 @@
                   Limite total: {{ formatCurrency(balance.creditLimit) }}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                icon="plus"
-                @click="goToCreditCard"
-              >
+              <Button variant="ghost" size="sm" icon="plus">
                 Novo cartão
               </Button>
             </div>
@@ -248,8 +243,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted } from "vue";
 import { Line } from "vue-chartjs";
 import {
   Chart as ChartJS,
@@ -281,23 +275,8 @@ ChartJS.register(
   Filler,
 );
 
-const router = useRouter();
 const authStore = useAuthStore();
 const { info: showInfo } = useToast();
-
-interface Investment {
-  id: number;
-  name: string;
-  ticker: string;
-  type: string;
-  amount: number;
-  quantity: number;
-  avgPrice: number;
-  currentPrice: number;
-  profitLoss: number;
-  profitLossPercent: number;
-  icon: string;
-}
 
 interface CreditCard {
   id: number;
@@ -306,16 +285,6 @@ interface CreditCard {
   limit: number;
   available: number;
   status: "active" | "blocked";
-}
-
-interface Transaction {
-  id: number;
-  description: string;
-  date: string;
-  amount: number;
-  type: "credit" | "debit";
-  category: string;
-  status: "completed" | "pending";
 }
 
 const userData = computed(() => authStore.user);
@@ -347,61 +316,6 @@ const greeting = computed(() => {
   return "Boa noite";
 });
 
-const investments = ref<Investment[]>([
-  {
-    id: 1,
-    name: "BTG Pactual Dividendos",
-    ticker: "BBDC11",
-    type: "FII",
-    amount: 12500.0,
-    quantity: 100,
-    avgPrice: 125.0,
-    currentPrice: 128.5,
-    profitLoss: 350.0,
-    profitLossPercent: 2.8,
-    icon: "🏢",
-  },
-  {
-    id: 2,
-    name: "Tesouro Selic 2027",
-    ticker: "LFT 2027",
-    type: "Tesouro Direto",
-    amount: 15000.0,
-    quantity: 15000,
-    avgPrice: 100.0,
-    currentPrice: 100.8,
-    profitLoss: 120.0,
-    profitLossPercent: 0.8,
-    icon: "💰",
-  },
-  {
-    id: 3,
-    name: "Vale S.A.",
-    ticker: "VALE3",
-    type: "Ação",
-    amount: 4500.0,
-    quantity: 50,
-    avgPrice: 90.0,
-    currentPrice: 92.5,
-    profitLoss: 125.0,
-    profitLossPercent: 2.78,
-    icon: "⛏️",
-  },
-  {
-    id: 4,
-    name: "BTG Dol FIC FIA",
-    ticker: "BTCI11",
-    type: "Fundo",
-    amount: 2200.0,
-    quantity: 100,
-    avgPrice: 22.0,
-    currentPrice: 22.5,
-    profitLoss: 50.0,
-    profitLossPercent: 2.27,
-    icon: "📈",
-  },
-]);
-
 const creditCards = ref<CreditCard[]>([
   {
     id: 1,
@@ -418,54 +332,6 @@ const creditCards = ref<CreditCard[]>([
     limit: 10000.0,
     available: 10000.0,
     status: "active",
-  },
-]);
-
-const recentTransactions = ref<Transaction[]>([
-  {
-    id: 1,
-    description: "Transferência recebida - João Silva",
-    date: "05/12 14:30",
-    amount: 2500.0,
-    type: "credit",
-    category: "Transferência",
-    status: "completed",
-  },
-  {
-    id: 2,
-    description: "Apple Store",
-    date: "04/12 10:15",
-    amount: 299.9,
-    type: "debit",
-    category: "Tecnologia",
-    status: "completed",
-  },
-  {
-    id: 3,
-    description: "Restaurante Italiano",
-    date: "03/12 20:45",
-    amount: 187.5,
-    type: "debit",
-    category: "Alimentação",
-    status: "completed",
-  },
-  {
-    id: 4,
-    description: "Depósito em conta",
-    date: "02/12 09:00",
-    amount: 5000.0,
-    type: "credit",
-    category: "Depósito",
-    status: "completed",
-  },
-  {
-    id: 5,
-    description: "Uber *Viagem",
-    date: "01/12 18:30",
-    amount: 32.8,
-    type: "debit",
-    category: "Transporte",
-    status: "pending",
   },
 ]);
 
@@ -526,7 +392,7 @@ const chartOptions = ref({
       display: false,
     },
     tooltip: {
-      mode: "index",
+      mode: "index" as const,
       intersect: false,
       backgroundColor: "rgba(15, 23, 42, 0.95)",
       titleColor: "#ffffff",
@@ -573,7 +439,7 @@ const chartOptions = ref({
   },
   interaction: {
     intersect: false,
-    mode: "nearest",
+    mode: "index" as const,
   },
   elements: {
     line: {
@@ -587,12 +453,6 @@ const chartStats = ref({
   low: 35000,
   average: 41245,
   change: 8.7,
-});
-
-const dailySummary = ref({
-  income: 7500,
-  expenses: 520.2,
-  balance: 6979.8,
 });
 
 const unreadNotifications = ref(3);

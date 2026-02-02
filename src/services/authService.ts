@@ -1,7 +1,27 @@
 import api from "./api";
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+interface RegisterData {
+  name: string;
+  email: string;
+  cpf: string;
+  phone: string;
+  country: string;
+  password: string;
+  hasAdvisor?: boolean;
+  advisorName?: string;
+}
+
+interface AuthData {
+  user: any;
+  token: string;
+}
 
 const authService = {
-  async login(credentials) {
+  async async(credentials: LoginCredentials) {
     try {
       const response = await api.post("/auth/login", credentials);
       return response;
@@ -11,7 +31,7 @@ const authService = {
     }
   },
 
-  async register(userData) {
+  async register(userData: RegisterData) {
     try {
       const response = await api.post("/auth/register", userData);
       return response;
@@ -41,7 +61,7 @@ const authService = {
     }
   },
 
-  setAuthData(data) {
+  setAuthData(data: AuthData) {
     if (data.token) {
       localStorage.setItem("auth_token", data.token);
     }

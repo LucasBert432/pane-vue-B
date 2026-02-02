@@ -1,4 +1,3 @@
-// Mude para CommonJS se tiver problemas
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import * as path from "path";

@@ -75,7 +75,7 @@ const togglePasswordVisibility = () => {
                 'has-toggle': shouldShowPasswordToggle,
               },
             ]"
-            @input="(e) => handleInput(e, field, mask)"
+            @input="(e: Event) => handleInput(e, field, mask)"
             @blur="field.onBlur"
           />
 

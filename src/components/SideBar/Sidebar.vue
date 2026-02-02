@@ -4,7 +4,7 @@
       v-if="isMobile && isMobileOpen"
       :class="$style.mobileOverlay"
       @click="toggleMobileSidebar"
-    />
+    ></div>
 
     <div :class="$style.sidebarInner">
       <div :class="$style.sidebarHeader">
@@ -118,7 +118,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import {
   LayoutDashboard,
   TrendingUp,
