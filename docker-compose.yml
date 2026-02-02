@@ -23,7 +23,7 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=https://bff-b.fly.dev
+      - VITE_API_URL=https://bff-b.fly.dev/api
     volumes:
       - ./frontend:/app
       - /app/node_modules

@@ -18,15 +18,9 @@ const api: AxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
-console.log("🔥 VITE_API_URL =", import.meta.env.VITE_API_URL);
 
 api.interceptors.request.use(
   (config) => {
-    console.log(
-      `[API Request] ${config.method?.toUpperCase()} ${config.url}`,
-      config.data,
-    );
-
     const token = localStorage.getItem("auth_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
