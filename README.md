@@ -9,6 +9,12 @@
   Projeto focado em arquitetura limpa, experiência do usuário e boas práticas de frontend.
 </p>
 
+## 🚀 Acesso ao projeto
+
+Você pode acessar a aplicação em produção através do link abaixo:
+
+🔗 https://pane-vue-b.vercel.app/
+
 ---
 
 ## ✨ Visão Geral
